@@ -4,10 +4,8 @@ from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import Integer
 from sqlalchemy import String
-from sqlalchemy.ext.declarative import DeclarativeMeta
-from sqlalchemy.ext.declarative import declarative_base
 
-Base: DeclarativeMeta = declarative_base()
+from db import Base
 
 
 class User(Base):

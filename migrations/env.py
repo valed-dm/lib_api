@@ -6,7 +6,7 @@ from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 # Import your models here
-from db.models import Base  # Adjust to your app's structure
+from db.users import Base  # Adjust to your app's structure
 
 # Get config
 config = context.config

@@ -20,7 +20,7 @@ from sqlalchemy.future import select
 from auth.token_schema import TokenData
 from auth.token_schema import oauth2_scheme
 from db.db import get_db
-from db.models import User
+from db.users import User
 
 load_dotenv()
 

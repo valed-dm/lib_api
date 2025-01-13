@@ -17,7 +17,7 @@ from user.get import get_user
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
 
-    from db.models import User
+    from db.users import User
 
 load_dotenv()
 

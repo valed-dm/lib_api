@@ -9,7 +9,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from auth.auth import get_password_hash
-from db.models import User
+from db.users import User
 from user.get import get_user
 from user.user import UserCreate
 
