@@ -26,7 +26,12 @@ repos:
     hooks:
       # Linter
       - id: ruff
-        args: [ --fix, --exit-non-zero-on-fix ]
+        args: [
+          --fix,
+          --exit-non-zero-on-fix,
+          --ignore,
+          "TCH002"
+        ]
       # Formatter
       - id: ruff-format
 
