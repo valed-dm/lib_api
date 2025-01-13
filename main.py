@@ -90,7 +90,7 @@ async def login_for_access_token(
     """
     user = await authenticate_user(db, form_data.username, form_data.password)
 
-    if not user:
+    if user is None:
         warning_msg = f"Failed login attempt for username: {form_data.username}"
         logger.warning(warning_msg)
         raise HTTPException(
