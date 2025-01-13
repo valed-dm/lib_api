@@ -29,8 +29,7 @@ repos:
         args: [
           --fix,
           --exit-non-zero-on-fix,
-          --ignore,
-          "TCH002"
+          --ignore, "TCH001,TCH002"
         ]
       # Formatter
       - id: ruff-format
