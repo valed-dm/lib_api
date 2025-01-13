@@ -2,15 +2,18 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 
-from db import Base
-from db.association_tables import book_category_association
-from db.books import Book
+from db.base import Base
+
+if TYPE_CHECKING:
+    from db import Book
 
 
 class Category(Base):
@@ -38,6 +41,6 @@ class Category(Base):
     name: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     books: Mapped[list[Book]] = relationship(
         "Book",
-        secondary=book_category_association,
+        secondary="book_category",
         back_populates="categories",
     )

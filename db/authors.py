@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from sqlalchemy import Date
 from sqlalchemy import Integer
 from sqlalchemy import String
@@ -10,9 +12,10 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 
-from db import Base
-from db.association_tables import book_author_association
-from db.books import Book
+from db.base import Base
+
+if TYPE_CHECKING:
+    from db import Book
 
 
 class Author(Base):
@@ -52,6 +55,6 @@ class Author(Base):
     deathdate: Mapped[Date] = mapped_column(Date, default="1900-01-01")
     books: Mapped[list[Book]] = relationship(
         "Book",
-        secondary=book_author_association,
+        secondary="book_author",
         back_populates="authors",
     )

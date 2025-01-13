@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
@@ -9,8 +11,10 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 
-from db import Base
-from db.books import Book
+from db.base import Base
+
+if TYPE_CHECKING:
+    from db import Book
 
 
 class Image(Base):
@@ -42,4 +46,4 @@ class Image(Base):
         ForeignKey("books.id"),
         unique=True,
     )
-    book: Mapped[Book | None] = relationship(Book, back_populates="image_src")
+    book: Mapped[Book | None] = relationship("Book", back_populates="image_src")

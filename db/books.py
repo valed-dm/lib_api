@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from sqlalchemy import Date
 from sqlalchemy import Integer
 from sqlalchemy import String
@@ -10,12 +12,12 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 
-from db import Base
-from db.association_tables import book_author_association
-from db.association_tables import book_category_association
-from db.authors import Author
-from db.categories import Category
-from db.images import Image
+from db.base import Base
+
+if TYPE_CHECKING:
+    from db import Author
+    from db import Category
+    from db import Image
 
 
 class Book(Base):
@@ -60,12 +62,12 @@ class Book(Base):
     date: Mapped[Date] = mapped_column(Date, default="1900-01-01")
     authors: Mapped[list[Author]] = relationship(
         "Author",
-        secondary=book_author_association,
+        secondary="book_author",
         back_populates="books",
     )
     categories: Mapped[list[Category]] = relationship(
         "Category",
-        secondary=book_category_association,
+        secondary="book_category",
         back_populates="books",
     )
     google_book_id: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
