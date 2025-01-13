@@ -5,7 +5,7 @@ from sqlalchemy import Integer
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 
-from db import Base
+from db.base import Base
 
 
 class Library(Base):
