@@ -93,6 +93,8 @@ select = [
 ]
 ignore = [
     "S101", # Use of assert detected (intended for debugging purposes)
+    "TCH001",
+    "TCH002", # Move third-party import into a type-checking block
     "RUF012", # Mutable class attributes allowed for specific design cases
     "UP038", # Avoid fixing isinstance/issubclass tuples automatically
 ]
