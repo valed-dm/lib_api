@@ -26,24 +26,33 @@ Purpose:
     category to include multiple books.
 """
 
-from sqlalchemy import Column
 from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
-from sqlalchemy import Table
+from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import mapped_column
 
-from db import Base
-
-book_author_association = Table(
-    "book_author",
-    Base.metadata,
-    Column("book_id", Integer, ForeignKey("books.id"), primary_key=True),
-    Column("author_id", Integer, ForeignKey("authors.id"), primary_key=True),
-)
+from db.base import Base
 
 
-book_category_association = Table(
-    "book_category",
-    Base.metadata,
-    Column("book_id", Integer, ForeignKey("books.id"), primary_key=True),
-    Column("category_id", Integer, ForeignKey("categories.id"), primary_key=True),
-)
+class BookAuthorAssociation(Base):
+    """
+    Association table for the many-to-many relationship between books and authors.
+    """
+
+    __tablename__ = "book_author"
+
+    book_id: Mapped[int] = mapped_column(ForeignKey("books.id"), primary_key=True)
+    author_id: Mapped[int] = mapped_column(ForeignKey("authors.id"), primary_key=True)
+
+
+class BookCategoryAssociation(Base):
+    """
+    Association table for the many-to-many relationship between books and categories.
+    """
+
+    __tablename__ = "book_category"
+
+    book_id: Mapped[int] = mapped_column(ForeignKey("books.id"), primary_key=True)
+    category_id: Mapped[int] = mapped_column(
+        ForeignKey("categories.id"),
+        primary_key=True,
+    )
