@@ -10,20 +10,21 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 
+from db import TimestampMixin
 from db.base import Base
 
 if TYPE_CHECKING:
     from db import Book
 
 
-class Category(Base):
+class Category(Base, TimestampMixin):
     """
     Represents a category or genre for organizing books.
 
     Attributes:
         id (int): The unique identifier for the category.
         name (str): The name of the category. Must be unique, with a maximum length
-        of 50 characters.
+        of 30 characters.
         books (list[Book]): A list of books associated with this category.
 
     Relationships:
@@ -38,7 +39,7 @@ class Category(Base):
     __tablename__ = "categories"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    name: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(30), unique=True, nullable=False)
     books: Mapped[list[Book]] = relationship(
         "Book",
         secondary="book_category",
