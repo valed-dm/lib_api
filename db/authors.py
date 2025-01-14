@@ -29,7 +29,7 @@ class Author(Base, TimestampMixin):
         biography (str | None): A textual description of the author's life and work.
         Can be left blank.
         years (str | None): The author's years of life, with a maximum length of
-        10 characters. Can be left blank.
+        10 characters. Default to empty string.
         books (list[Book]): A list of books written by the author.
 
     Relationships:
@@ -46,9 +46,9 @@ class Author(Base, TimestampMixin):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
-    biography: Mapped[str | None] = mapped_column(Text, default="", nullable=True)
+    biography: Mapped[str] = mapped_column(Text, default="")
     # Using a string to represent the years (birth - death)
-    years: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    years: Mapped[str] = mapped_column(String(10), default="")
     books: Mapped[list[Book]] = relationship(
         "Book",
         secondary="book_author",
