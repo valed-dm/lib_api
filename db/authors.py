@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Date
 from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import Text
@@ -12,13 +11,14 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 
+from db import TimestampMixin
 from db.base import Base
 
 if TYPE_CHECKING:
     from db import Book
 
 
-class Author(Base):
+class Author(Base, TimestampMixin):
     """
     Represents an author of books in the library system.
 
@@ -28,22 +28,18 @@ class Author(Base):
         of 50 characters.
         biography (str | None): A textual description of the author's life and work.
         Can be left blank.
-        birthdate (Date): The author's date of birth. Defaults to "1900-01-01"
-        if unspecified.
-        deathdate (Date): The author's date of death. Defaults to "1900-01-01"
-        if unspecified.
+        years (str | None): The author's years of life, with a maximum length of
+        10 characters. Can be left blank.
         books (list[Book]): A list of books written by the author.
 
     Relationships:
         - books: Establishes a many-to-many relationship with the `Book` class using the
-          `book_author_association` table as the intermediary. This allows authors to be
+          `book_author` table as the intermediary. This allows authors to be
           linked to multiple books and books to have multiple authors.
 
     Notes:
         - The `name` column is enforced as unique to prevent duplicate entries for
         the same author.
-        - The `birthdate` and `deathdate` default to "1900-01-01", serving
-        as placeholders if specific dates are unknown.
     """
 
     __tablename__ = "authors"
@@ -51,8 +47,8 @@ class Author(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     biography: Mapped[str | None] = mapped_column(Text, default="", nullable=True)
-    birthdate: Mapped[Date] = mapped_column(Date, default="1900-01-01")
-    deathdate: Mapped[Date] = mapped_column(Date, default="1900-01-01")
+    # Using a string to represent the years (birth - death)
+    years: Mapped[str | None] = mapped_column(String(10), nullable=True)
     books: Mapped[list[Book]] = relationship(
         "Book",
         secondary="book_author",
