@@ -12,6 +12,7 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 
+from db import TimestampMixin
 from db.base import Base
 
 if TYPE_CHECKING:
@@ -20,7 +21,7 @@ if TYPE_CHECKING:
     from db import Image
 
 
-class Book(Base):
+class Book(Base, TimestampMixin):
     """
     Represents a book available in the library system.
 
@@ -29,27 +30,20 @@ class Book(Base):
         title (str): The title of the book. This field is required and cannot exceed
         200 characters.
         description (str | None): A textual description or summary of the book.
-        Defaults to an empty string if not provided.
-        date (Date): The publication date of the book. Defaults to "1900-01-01"
-        if unspecified.
-        google_book_id (str): A unique identifier for the book, sourced from
-        Google's Book API. This field is required and must be unique.
+        Default to empty string.
+        date (Date | None): The publication date of the book. Can be left blank.
+        google_book_id (str | None): A unique identifier for the book, sourced from
+        Google's Book API. Can be left blank.
 
     Relationships:
         - authors (list[Author]): A many-to-many relationship linking the book to its
-        authors,
-          using the `book_author_association` table as the intermediary.
+        authors, using the `book_author` table as the intermediary.
         - categories (list[Category]): A many-to-many relationship linking the book to
-        its categories,
-          using the `book_category_association` table as the intermediary.
+        its categories, using the `book_category` table as the intermediary.
         - image_src (Image | None): A one-to-one relationship linking the book to its
         associated image, if any.
 
     Notes:
-        - The `google_book_id` field ensures that each book in the database has a unique
-         reference, avoiding duplicates.
-        - The `date` defaults to "1900-01-01" to serve as a placeholder for missing
-        publication dates.
         - The relationships enable the association of books with multiple authors and
         categories.
     """
@@ -58,8 +52,14 @@ class Book(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     title: Mapped[str] = mapped_column(String(200), nullable=False)
-    description: Mapped[str | None] = mapped_column(Text, default="", nullable=True)
-    date: Mapped[Date] = mapped_column(Date, default="1900-01-01")
+    description: Mapped[str] = mapped_column(Text, default="")
+    date: Mapped[Date | None] = mapped_column(Date, default=None, nullable=True)
+    google_book_id: Mapped[str | None] = mapped_column(
+        String(20),
+        unique=True,
+        default=None,
+        nullable=True,
+    )
     authors: Mapped[list[Author]] = relationship(
         "Author",
         secondary="book_author",
@@ -70,7 +70,6 @@ class Book(Base):
         secondary="book_category",
         back_populates="books",
     )
-    google_book_id: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
     image_src: Mapped[Image | None] = relationship(
         "Image",
         uselist=False,
