@@ -5,10 +5,11 @@ from sqlalchemy import Integer
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 
+from db import TimestampMixin
 from db.base import Base
 
 
-class Library(Base):
+class Library(Base, TimestampMixin):
     """
     Represents the library inventory that tracks the available quantity of books.
 
