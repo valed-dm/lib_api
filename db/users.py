@@ -5,10 +5,11 @@ from sqlalchemy import Column
 from sqlalchemy import Integer
 from sqlalchemy import String
 
+from db import TimestampMixin
 from db.base import Base
 
 
-class User(Base):
+class User(Base, TimestampMixin):
     """
     User model for database interaction.
 
