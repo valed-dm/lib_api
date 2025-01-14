@@ -11,13 +11,14 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 
+from db import TimestampMixin
 from db.base import Base
 
 if TYPE_CHECKING:
     from db import Book
 
 
-class Image(Base):
+class Image(Base, TimestampMixin):
     """
     Represents an image associated with a book.
 
