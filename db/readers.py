@@ -6,10 +6,11 @@ from sqlalchemy import Integer
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 
+from db import TimestampMixin
 from db.base import Base
 
 
-class Reader(Base):
+class Reader(Base, TimestampMixin):
     """
     Represents a record of a user borrowing a book from the library.
 
