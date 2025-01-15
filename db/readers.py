@@ -18,8 +18,7 @@ class Reader(Base, TimestampMixin):
         id (int): The primary key for the reader entry.
         user_id (int): The foreign key referencing the user who borrowed the book.
         Links to the `users` table.
-        book_id (int): The foreign key referencing the borrowed book.
-        Links to the `books` table.
+        book_id (int): The foreign key referencing the borrowed book (`books` table).
         lent_out (Date): The date when the book was borrowed.
         lent_till (Date): The date by which the book must be returned.
         limit (int): The maximum number of books a user can borrow. Defaults to 5.
