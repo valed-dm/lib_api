@@ -16,8 +16,7 @@ class Library(Base, TimestampMixin):
     Attributes:
         id (int): The unique identifier for the library entry.
         book_id (int): A foreign key referencing the ID of a book in the "books" table.
-        quantity_available (int): The number of copies of the book available
-        in the library. Defaults to 0.
+        quantity_available (int): The number of copies available. Defaults to 0.
 
     Relationships:
         - book_id: Establishes a relationship with the "books" table,
