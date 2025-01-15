@@ -6,8 +6,8 @@ from sqlalchemy import Integer
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 
-from db import TimestampMixin
 from db.base import Base
+from db.timestamp import TimestampMixin
 
 
 class Reader(Base, TimestampMixin):
