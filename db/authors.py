@@ -24,12 +24,9 @@ class Author(Base, TimestampMixin):
 
     Attributes:
         id (int): The unique identifier for the author.
-        name (str): The full name of the author. Must be unique, with a maximum length
-        of 50 characters.
-        biography (str | None): A textual description of the author's life and work.
-        Can be left blank.
-        years (str | None): The author's years of life, with a maximum length of
-        10 characters. Default to empty string.
+        name (str): The full name of the author. Must be unique, max length 50.
+        biography (str): A textual description. Defaults to empty string.
+        years (str): The author's years of life, max length 10. Default to empty string.
         books (list[Book]): A list of books written by the author.
 
     Relationships:
@@ -38,8 +35,7 @@ class Author(Base, TimestampMixin):
           linked to multiple books and books to have multiple authors.
 
     Notes:
-        - The `name` column is enforced as unique to prevent duplicate entries for
-        the same author.
+        - The `name` column is enforced as unique.
     """
 
     __tablename__ = "authors"
