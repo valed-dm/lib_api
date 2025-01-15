@@ -23,8 +23,7 @@ class Category(Base, TimestampMixin):
 
     Attributes:
         id (int): The unique identifier for the category.
-        name (str): The name of the category. Must be unique, with a maximum length
-        of 30 characters.
+        name (str): The name of the category. Must be unique, maxlength 30.
         books (list[Book]): A list of books associated with this category.
 
     Relationships:
