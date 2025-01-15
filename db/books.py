@@ -27,13 +27,10 @@ class Book(Base, TimestampMixin):
 
     Attributes:
         id (int): The unique identifier for the book.
-        title (str): The title of the book. This field is required and cannot exceed
-        200 characters.
-        description (str | None): A textual description or summary of the book.
-        Default to empty string.
+        title (str): The title of the book. Required, max 200 characters.
+        description (str): A summary of the book. Default to empty string.
         date (Date | None): The publication date of the book. Can be left blank.
-        google_book_id (str | None): A unique identifier for the book, sourced from
-        Google's Book API. Can be left blank.
+        google_book_id (str | None): An identifier from Google's Book API. Optional.
 
     Relationships:
         - authors (list[Author]): A many-to-many relationship linking the book to its
@@ -55,7 +52,7 @@ class Book(Base, TimestampMixin):
     description: Mapped[str] = mapped_column(Text, default="")
     date: Mapped[Date | None] = mapped_column(Date, default=None, nullable=True)
     google_book_id: Mapped[str | None] = mapped_column(
-        String(20),
+        String(30),
         unique=True,
         default=None,
         nullable=True,
