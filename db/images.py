@@ -24,7 +24,7 @@ class Image(Base, TimestampMixin):
 
     Attributes:
         id (int): The unique identifier for the image.
-        image_src (str): The URL of the image. Maximum length is 200 characters.
+        image_src (str): The URL of the image. Maxlength 200. Required.
         book_id (int | None): A foreign key referencing the ID of the associated book
          in the "books" table. This is unique, as each book can have at most one
          associated image.
