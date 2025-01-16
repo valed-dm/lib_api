@@ -15,6 +15,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from auth.auth import authenticate_user
 from auth.auth import create_access_token
 from auth.token_schema import Token
+from book.book import BookCreate
+from book.create import create_book
 from db.utils import get_db
 from user.create import create_user
 from user.get import get_current_active_user
@@ -107,6 +109,15 @@ async def login_for_access_token(
     )
 
     return Token(access_token=access_token, token_type=TOKEN_TYPE)
+
+
+@app.post("/books/", status_code=201)
+async def create_book_route(
+    book_data: BookCreate,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    _: Annotated[User, Security(get_current_active_user, scopes=["create"])],
+):
+    return await create_book(db, book_data)
 
 
 @app.get("/users/me/", response_model=User)
