@@ -16,11 +16,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from auth.auth import authenticate_user
 from auth.auth import create_access_token
 from auth.token_schema import Token
-from book.book import BookCreate
-from book.create import create_book
-from book.get import get_books
-from book.read import BookRead
-from book.search import BookSearchSchema
+from book.crud.create import create_book
+from book.crud.get import get_books
+from book.schemas.create import BookCreate
+from book.schemas.read import BookRead
+from book.schemas.search import BookSearchSchema
 from db.utils import get_db
 from user.create import create_user
 from user.get import get_current_active_user
