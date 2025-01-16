@@ -41,7 +41,7 @@ class Image(Base, TimestampMixin):
     __tablename__ = "images"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    image_src: Mapped[str] = mapped_column(String(200), nullable=False)
+    image_src: Mapped[str] = mapped_column(String(200), unique=True, nullable=False)
     book_id: Mapped[int | None] = mapped_column(
         Integer,
         ForeignKey("books.id"),
