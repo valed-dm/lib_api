@@ -3,7 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from book.book import BookCreate
+from book.schemas.create import BookCreate
 from db import Author
 from db import Book
 from db import Category
