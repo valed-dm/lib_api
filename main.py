@@ -6,9 +6,9 @@ from fastapi import HTTPException
 from fastapi import Security
 from sqlalchemy.exc import IntegrityError
 
+from routes.auth.auth_token import user_token_router
 from routes.auth.me import user_me_router
 from routes.auth.register import user_register_router
-from routes.auth.token import user_token_router
 from routes.books.create import create_book_router
 from routes.books.delete import delete_books_router
 from routes.books.delete_all import delete_all_books_router
