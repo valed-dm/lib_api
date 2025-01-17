@@ -8,6 +8,7 @@ from fastapi import Security
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from book.crud.delete_all import delete_all_books
+from book.schemas.delete import DeleteBooksResponse
 from db import User
 from db.utils import get_db
 from user.get import get_current_active_user
@@ -15,7 +16,11 @@ from user.get import get_current_active_user
 delete_all_books_router = APIRouter()
 
 
-@delete_all_books_router.delete("/books/all", status_code=204)
+@delete_all_books_router.delete(
+    "/books/all",
+    response_model=DeleteBooksResponse,
+    status_code=200,
+)
 async def delete_all_books_route(
     db: Annotated[AsyncSession, Depends(get_db)],
     confirm: Annotated[
@@ -41,4 +46,9 @@ async def delete_all_books_route(
             detail=f"An error occurred while deleting all books: {e!s}",
         ) from e
 
-    return {"detail": f"{deleted_count} book(s) successfully deleted."}
+    return DeleteBooksResponse(
+        message="Book(s) deleted successfully"
+        if deleted_count > 0
+        else "No book found to delete",
+        deleted_count=deleted_count,
+    )
