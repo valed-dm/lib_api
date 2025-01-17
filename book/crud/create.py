@@ -1,5 +1,4 @@
 from sqlalchemy.dialects.postgresql import insert
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -50,32 +49,37 @@ async def create_book(db: AsyncSession, book_data: BookCreate) -> Book:
         }
         ```
     """
-    # Upsert authors
-    author_names = [name.strip() for name in book_data.authors if name.strip()]
-    authors = await upsert_entities(db, Author, author_names)
+    # Use a transaction to ensure consistency
+    async with db.begin():
+        # Upsert authors
+        author_names = [name.strip() for name in book_data.authors if name.strip()]
+        authors = await upsert_entities(db, Author, author_names)
 
-    # Upsert categories if provided
-    cats = []
-    if book_data.categories:
-        category_names = [
-            cat_name.strip() for cat_name in book_data.categories if cat_name.strip()
-        ]
-        cats = await upsert_entities(db, Category, category_names)
+        # Upsert categories if provided
+        cats = []
+        if book_data.categories:
+            category_names = [
+                cat_name.strip()
+                for cat_name in book_data.categories
+                if cat_name.strip()
+            ]
+            cats = await upsert_entities(db, Category, category_names)
 
-    # Upsert image if provided
-    image = None
-    if book_data.image_src:
-        stmt = (
-            insert(Image).values(image_src=book_data.image_src).on_conflict_do_nothing()
-        )
-        await db.execute(stmt)
-        img_result = await db.execute(
-            select(Image).where(Image.image_src == book_data.image_src),
-        )
-        image = img_result.scalar_one()
+        # Upsert image if provided
+        image = None
+        if book_data.image_src:
+            stmt = (
+                insert(Image)
+                .values(image_src=book_data.image_src)
+                .on_conflict_do_nothing()
+            )
+            await db.execute(stmt)
+            img_result = await db.execute(
+                select(Image).where(Image.image_src == book_data.image_src),
+            )
+            image = img_result.scalar_one_or_none()
 
-    # Create the book
-    try:
+        # Create the book
         new_book = Book(
             title=book_data.title,
             description=book_data.description or "",
@@ -86,11 +90,8 @@ async def create_book(db: AsyncSession, book_data: BookCreate) -> Book:
             image_src=image,
         )
         db.add(new_book)
-        await db.commit()
-        await db.refresh(new_book)
-    except IntegrityError as e:
-        await db.rollback()
-        exc_msg = f"Failed to create book due to integrity error: {e!s}"
-        raise ValueError(exc_msg) from e
 
+    # Ensure the transaction is committed, then refresh and return the book
+    await db.commit()
+    await db.refresh(new_book)
     return new_book
