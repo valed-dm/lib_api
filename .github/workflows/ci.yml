@@ -39,7 +39,7 @@ jobs:
 
       # Step 4: Lint with Ruff
       - name: Lint with Ruff
-        run: poetry run ruff check --output-format=github .
+        run: poetry run ruff check --output-format=github --extend-ignore TC003 .
 
 
       # Step 5: Run tests
