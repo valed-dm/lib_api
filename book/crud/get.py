@@ -21,9 +21,9 @@ async def get_books(db: AsyncSession, **kwargs) -> list[Book]:
     if title := kwargs.get("title"):
         filters.append(Book.title.ilike(f"%{title}%"))
     if author := kwargs.get("author"):
-        filters.append(Book.authors.any(Author.name.ilike(f"%{author}%")))
+        filters.append(Book.authors.any(Author.name.ilike(f"%{author}%")))  # type: ignore[arg-type]
     if category := kwargs.get("category"):
-        filters.append(Book.categories.any(Category.name.ilike(f"%{category}%")))
+        filters.append(Book.categories.any(Category.name.ilike(f"%{category}%")))  # type: ignore[arg-type]
 
     if filters:
         query = query.where(*filters)
