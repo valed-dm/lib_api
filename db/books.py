@@ -71,4 +71,5 @@ class Book(Base, TimestampMixin):
         "Image",
         uselist=False,
         back_populates="book",
+        cascade="all, delete-orphan",
     )
