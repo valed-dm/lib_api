@@ -10,6 +10,8 @@ from routes.auth.me import user_me_router
 from routes.auth.register import user_register_router
 from routes.auth.token import user_token_router
 from routes.books.create import create_book_router
+from routes.books.delete import delete_books_router
+from routes.books.delete_all import delete_all_books_router
 from routes.books.get import get_books_router
 from routes.books.patch import patch_book_router
 from user.get import get_current_active_user
@@ -26,6 +28,8 @@ app.include_router(user_me_router, tags=["users"])
 app.include_router(create_book_router, tags=["books"])
 app.include_router(get_books_router, tags=["books"])
 app.include_router(patch_book_router, tags=["books"])
+app.include_router(delete_books_router, tags=["books"])
+app.include_router(delete_all_books_router, tags=["books"])
 
 
 @app.exception_handler(IntegrityError)
