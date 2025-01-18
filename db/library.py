@@ -26,5 +26,9 @@ class Library(Base, TimestampMixin):
     __tablename__ = "libraries"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    book_id: Mapped[int] = mapped_column(ForeignKey("books.id"), nullable=False)
+    book_id: Mapped[int] = mapped_column(
+        ForeignKey("books.id"),
+        unique=True,
+        nullable=False,
+    )
     quantity_available: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
