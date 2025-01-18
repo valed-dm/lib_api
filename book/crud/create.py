@@ -49,7 +49,6 @@ async def create_book(db: AsyncSession, book_data: BookCreate) -> Book:
         }
         ```
     """
-    # Use a transaction to ensure consistency
     async with db.begin():
         # Upsert authors
         author_names = [name.strip() for name in book_data.authors if name.strip()]
@@ -79,6 +78,10 @@ async def create_book(db: AsyncSession, book_data: BookCreate) -> Book:
             )
             image = img_result.scalar_one_or_none()
 
+            if image is None:
+                err_msg = f"Failed to upsert image: {book_data.image_src}"
+                raise ValueError(err_msg)
+
         # Create the book
         new_book = Book(
             title=book_data.title,
@@ -91,7 +94,5 @@ async def create_book(db: AsyncSession, book_data: BookCreate) -> Book:
         )
         db.add(new_book)
 
-    # Ensure the transaction is committed, then refresh and return the book
-    await db.commit()
     await db.refresh(new_book)
     return new_book
