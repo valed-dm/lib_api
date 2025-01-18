@@ -9,6 +9,7 @@ from sqlalchemy.exc import IntegrityError
 from routes.auth.auth_token import user_token_router
 from routes.auth.me import user_me_router
 from routes.auth.register import user_register_router
+from routes.author.all import author_router
 from routes.books.create import create_book_router
 from routes.books.delete import delete_books_router
 from routes.books.delete_all import delete_all_books_router
@@ -30,6 +31,7 @@ app.include_router(get_books_router, tags=["books"])
 app.include_router(patch_book_router, tags=["books"])
 app.include_router(delete_books_router, tags=["books"])
 app.include_router(delete_all_books_router, tags=["books"])
+app.include_router(author_router, tags=["authors"])
 
 
 @app.exception_handler(IntegrityError)
