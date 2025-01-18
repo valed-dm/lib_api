@@ -15,6 +15,7 @@ from routes.books.delete import delete_books_router
 from routes.books.delete_all import delete_all_books_router
 from routes.books.get import get_books_router
 from routes.books.patch import patch_book_router
+from routes.library.all import library_router
 from user.get import get_current_active_user
 from user.user import User
 
@@ -23,15 +24,16 @@ app = FastAPI()
 logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
 
-app.include_router(user_register_router, tags=["users"])
-app.include_router(user_token_router, tags=["users"])
-app.include_router(user_me_router, tags=["users"])
-app.include_router(create_book_router, tags=["books"])
-app.include_router(get_books_router, tags=["books"])
-app.include_router(patch_book_router, tags=["books"])
-app.include_router(delete_books_router, tags=["books"])
-app.include_router(delete_all_books_router, tags=["books"])
-app.include_router(author_router, tags=["authors"])
+app.include_router(user_register_router, tags=["Users"])
+app.include_router(user_token_router, tags=["Users"])
+app.include_router(user_me_router, tags=["Users"])
+app.include_router(create_book_router, tags=["Books"])
+app.include_router(get_books_router, tags=["Books"])
+app.include_router(patch_book_router, tags=["Books"])
+app.include_router(delete_books_router, tags=["Books"])
+app.include_router(delete_all_books_router, tags=["Books"])
+app.include_router(author_router, tags=["Authors"])
+app.include_router(library_router, tags=["Library"])
 
 
 @app.exception_handler(IntegrityError)
