@@ -55,4 +55,5 @@ async def handle_integrity_error(request, exc: IntegrityError):
 async def read_system_status(
     current_user: Annotated[User, Security(get_current_active_user, scopes=["admin"])],
 ):
+    """Available for admins only!"""
     return {"status": "ok", "admin": current_user.username}
