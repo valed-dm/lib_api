@@ -41,7 +41,7 @@ async def lend_books_to_user(
     Raises:
         HTTPException: If any validation fails during the lending process.
     """
-    response_details = []
+    lending_details = []
 
     async with db.begin():
         for item in lending_data:
@@ -74,7 +74,7 @@ async def lend_books_to_user(
             library_record = result.scalar_one_or_none()
 
             if not library_record or library_record.quantity_available <= 0:
-                response_details.append(
+                lending_details.append(
                     {
                         "user_id": user_id,
                         "book_id": book_id,
@@ -93,7 +93,7 @@ async def lend_books_to_user(
             existing_reader_record = result.scalar_one_or_none()
 
             if existing_reader_record:
-                response_details.append(
+                lending_details.append(
                     {
                         "user_id": user_id,
                         "book_id": book_id,
@@ -122,7 +122,7 @@ async def lend_books_to_user(
             db.add(reader)
             library_record.quantity_available -= 1
 
-            response_details.append(
+            lending_details.append(
                 {
                     "user_id": user_id,
                     "book_id": book_id,
@@ -133,5 +133,5 @@ async def lend_books_to_user(
 
     return JSONResponse(
         status_code=200,
-        content={"details": response_details},
+        content={"details": lending_details},
     )
