@@ -45,3 +45,24 @@ class LendingDataList(BaseModel):
         title="Lending Data",
         description="A list of lending operations",
     )
+
+
+class ReturnData(BaseModel):
+    user_id: int = Field(
+        ...,
+        title="User ID",
+        description="The ID of the user returning the book",
+    )
+    book_id: int = Field(
+        ...,
+        title="Book ID",
+        description="The ID of the book to be returned",
+    )
+
+
+class ReturnDataList(BaseModel):
+    return_data: list[ReturnData] = Field(
+        ...,
+        title="Return Data",
+        description="A list of return operations",
+    )
