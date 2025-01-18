@@ -16,7 +16,7 @@ from db.users import User
 from db.utils import get_db
 from user.get import get_current_active_user
 
-author_router = APIRouter(prefix="/authors", tags=["authors"])
+author_router = APIRouter(prefix="/authors", tags=["Authors"])
 
 
 @author_router.post("/", response_model=AuthorBase, status_code=201)
