@@ -66,3 +66,10 @@ class ReturnDataList(BaseModel):
         title="Return Data",
         description="A list of return operations",
     )
+
+
+class BorrowedItem(BaseModel):
+    book_id: int
+    book_title: str
+    lent_till: date
+    days_to_return_left: int
