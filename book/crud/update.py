@@ -69,19 +69,22 @@ async def update_book(
         if book_data.categories is not None:
             book.categories = await upsert_entities(db, Category, book_data.categories)
 
-        if book_data.image_src is not None:
-            image = await upsert_entities(
-                db,
-                Image,
-                [book_data.image_src],
-                name_field="image_src",
-            )
-            book.image_src = image[0]
+        # Handle the image
+        if book_data.image_src:
+            # Delete the current image if it exists
+            if book.image_src:
+                await db.delete(book.image_src)
+                await db.flush()
+
+            # Create and assign the new image
+            new_image = Image(image_src=book_data.image_src, book=book)
+            db.add(new_image)
+            await db.flush()
+
+            book.image_src = new_image
 
         # Add the updated book to the session
         db.add(book)
 
-    # Commit and refresh
-    await db.commit()
     await db.refresh(book)
     return book
