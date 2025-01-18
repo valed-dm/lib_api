@@ -10,6 +10,17 @@ from db import Category
 
 
 async def get_books(db: AsyncSession, **kwargs) -> list[Book]:
+    """
+    Retrieve a list of books from the database based on filters, sorting, and
+    pagination.
+
+    Args:
+        db: Database session.
+        **kwargs: Additional filters, sorting, and pagination options.
+
+    Returns:
+        List of Book objects.
+    """
     query = select(Book).options(
         selectinload(Book.authors),
         selectinload(Book.categories),
