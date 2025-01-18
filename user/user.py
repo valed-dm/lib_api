@@ -57,3 +57,13 @@ class UserOut(User):
         """
 
         from_attributes = True
+
+
+class UserUpdate(BaseModel):
+    """Superuser tool for updating user information."""
+
+    username: str | None = None
+    email: EmailStr | None = None
+    full_name: str | None = None
+    disabled: bool | None = None
+    scopes: str | None = None
