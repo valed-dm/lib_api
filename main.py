@@ -1,11 +1,10 @@
 import logging
-from typing import Annotated
 
 from fastapi import FastAPI
 from fastapi import HTTPException
-from fastapi import Security
 from sqlalchemy.exc import IntegrityError
 
+from routes.admin.users import admin_router
 from routes.auth.auth_token import user_token_router
 from routes.auth.me import user_me_router
 from routes.auth.register import user_register_router
@@ -16,14 +15,13 @@ from routes.books.delete_all import delete_all_books_router
 from routes.books.get import get_books_router
 from routes.books.patch import patch_book_router
 from routes.library.all import library_router
-from user.get import get_current_active_user
-from user.user import User
 
 app = FastAPI()
 
 logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
 
+app.include_router(admin_router, tags=["Admin"])
 app.include_router(user_register_router, tags=["Users"])
 app.include_router(user_token_router, tags=["Users"])
 app.include_router(user_me_router, tags=["Users"])
@@ -49,11 +47,3 @@ async def handle_integrity_error(request, exc: IntegrityError):
         detail = "A foreign key constraint failed."
 
     raise HTTPException(status_code=400, detail=detail)
-
-
-@app.get("/status/")
-async def read_system_status(
-    current_user: Annotated[User, Security(get_current_active_user, scopes=["admin"])],
-):
-    """Available for admins only!"""
-    return {"status": "ok", "admin": current_user.username}
