@@ -14,6 +14,4 @@ async def delete_all_books(db: AsyncSession) -> int:
         stmt = delete(Book)
         result = await db.execute(stmt)
 
-    await db.commit()  # Commit the changes
-
     return result.rowcount
