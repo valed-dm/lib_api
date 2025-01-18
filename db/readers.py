@@ -3,6 +3,7 @@
 from sqlalchemy import Date
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
+from sqlalchemy import UniqueConstraint
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 
@@ -32,3 +33,7 @@ class Reader(Base, TimestampMixin):
     lent_out: Mapped[Date] = mapped_column(Date, nullable=False)
     lent_till: Mapped[Date] = mapped_column(Date, nullable=False)
     limit: Mapped[int] = mapped_column(Integer, default=5, nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "book_id", name="uq_reader_user_book"),
+    )
