@@ -25,6 +25,4 @@ async def delete_books(
             msg = "No books were found to delete."
             raise ValueError(msg)
 
-    await db.commit()
-
     return result.rowcount
