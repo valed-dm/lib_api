@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Annotated
+from typing import Any
 
 from fastapi import APIRouter
 from fastapi import Depends
@@ -12,6 +13,7 @@ from db import User
 from db.utils import get_db
 from library.add import intake_books
 from library.book_return import return_books_from_user
+from library.by_user import get_borrowed_books_grouped_by_user
 from library.lend import lend_books_to_user
 from library.schemas import LendingDataList
 from library.schemas import LibraryCreate
@@ -86,3 +88,29 @@ async def return_books(
         return await return_books_from_user(db, data.return_data)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
+
+
+@library_router.get("/borrowed", response_model=dict[str, list[dict[str, Any]]])
+async def list_borrowed_books(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    _: Annotated[User, Security(get_current_active_user, scopes=["librarian"])],
+    username: str | None = None,
+    limit: int = 10,
+    offset: int = 0,
+) -> dict[str, list[dict[str, Any]]]:
+    """
+    List all borrowed books grouped by username.
+
+    Args:
+        db (AsyncSession): Database session.
+        _: Security dependency to ensure only users with the "librarian" scope can
+        access this endpoint.
+        username (str | None): Optional filter to list books for a specific username.
+        limit (int): Pagination limit.
+        offset (int): Pagination offset.
+
+    Returns:
+        dict[str, list]: Books grouped by username.
+    """
+
+    return await get_borrowed_books_grouped_by_user(db, username, limit, offset)
