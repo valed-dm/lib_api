@@ -51,13 +51,6 @@ async def handle_integrity_error(request, exc: IntegrityError):
     raise HTTPException(status_code=400, detail=detail)
 
 
-@app.get("/users/me/items/")
-async def read_own_items(
-    current_user: Annotated[User, Security(get_current_active_user, scopes=["items"])],
-):
-    return [{"item_id": "Foo", "owner": current_user.username}]
-
-
 @app.get("/status/")
 async def read_system_status(
     current_user: Annotated[User, Security(get_current_active_user, scopes=["admin"])],
