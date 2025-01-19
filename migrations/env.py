@@ -1,3 +1,4 @@
+import contextlib
 from logging.config import fileConfig
 
 from alembic import context
@@ -24,15 +25,15 @@ if config.config_file_name is not None:
 
 # Create a temporary metadata object for the authors table
 target_metadata = MetaData()
-User.metadata.tables["users"].tometadata(target_metadata)
-Author.metadata.tables["authors"].tometadata(target_metadata)
-Category.metadata.tables["categories"].tometadata(target_metadata)
-Book.metadata.tables["books"].tometadata(target_metadata)
-Image.metadata.tables["images"].tometadata(target_metadata)
-BookAuthorAssociation.metadata.tables["book_author"].tometadata(target_metadata)
-BookCategoryAssociation.metadata.tables["book_category"].tometadata(target_metadata)
-Library.metadata.tables["libraries"].tometadata(target_metadata)
-Reader.metadata.tables["readers"].tometadata(target_metadata)
+User.metadata.tables["users"].to_metadata(target_metadata)
+Author.metadata.tables["authors"].to_metadata(target_metadata)
+Category.metadata.tables["categories"].to_metadata(target_metadata)
+Book.metadata.tables["books"].to_metadata(target_metadata)
+Image.metadata.tables["images"].to_metadata(target_metadata)
+BookAuthorAssociation.metadata.tables["book_author"].to_metadata(target_metadata)
+BookCategoryAssociation.metadata.tables["book_category"].to_metadata(target_metadata)
+Library.metadata.tables["libraries"].to_metadata(target_metadata)
+Reader.metadata.tables["readers"].to_metadata(target_metadata)
 
 
 def run_migrations_offline():
@@ -72,4 +73,13 @@ if context.is_offline_mode():
 else:
     import asyncio
 
-    asyncio.run(run_migrations_online())
+    try:
+        # Check if we are in a running event loop
+        asyncio.get_running_loop()
+    except RuntimeError:
+        # No running loop, safe to use `asyncio.run`
+        asyncio.run(run_migrations_online())
+    else:
+        # Already in a running loop
+        with contextlib.suppress(RuntimeError):
+            asyncio.get_running_loop().run_until_complete(run_migrations_online())
