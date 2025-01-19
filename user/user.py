@@ -59,11 +59,17 @@ class UserOut(User):
         from_attributes = True
 
 
-class UserUpdate(BaseModel):
+class UserBaseUpdate(BaseModel):
     """Superuser tool for updating user information."""
 
     username: str | None = None
     email: EmailStr | None = None
     full_name: str | None = None
+
+    class Config:
+        from_attributes = True
+
+
+class UserFullUpdate(UserBaseUpdate):
     disabled: bool | None = None
     scopes: str | None = None
