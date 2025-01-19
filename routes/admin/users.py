@@ -10,12 +10,12 @@ from sqlalchemy.future import select
 from db import User
 from db.utils import get_db
 from user.get import get_current_active_user
-from user.user import UserUpdate
+from user.user import UserFullUpdate
 
 admin_router = APIRouter()
 
 
-@admin_router.get("/users/", response_model=list[UserUpdate])
+@admin_router.get("/users/", response_model=list[UserFullUpdate])
 async def list_users(
     db: Annotated[AsyncSession, Depends(get_db)],
     _: Annotated[User, Security(get_current_active_user, scopes=["superuser"])],
@@ -39,10 +39,10 @@ async def list_users(
     return result.scalars().all()
 
 
-@admin_router.patch("/users/{user_id}", response_model=UserUpdate)
+@admin_router.patch("/users/{user_id}", response_model=UserFullUpdate)
 async def update_user(
     user_id: int,
-    user_update: UserUpdate,
+    user_update: UserFullUpdate,
     db: Annotated[AsyncSession, Depends(get_db)],
     _: Annotated[User, Security(get_current_active_user, scopes=["superuser"])],
 ):
