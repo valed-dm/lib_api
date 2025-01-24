@@ -1,4 +1,3 @@
-import contextlib
 from logging.config import fileConfig
 
 from alembic import context
@@ -74,12 +73,6 @@ else:
     import asyncio
 
     try:
-        # Check if we are in a running event loop
-        asyncio.get_running_loop()
+        loop = asyncio.get_running_loop()
     except RuntimeError:
-        # No running loop, safe to use `asyncio.run`
         asyncio.run(run_migrations_online())
-    else:
-        # Already in a running loop
-        with contextlib.suppress(RuntimeError):
-            asyncio.get_running_loop().run_until_complete(run_migrations_online())
