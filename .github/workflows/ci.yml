@@ -61,6 +61,7 @@ jobs:
           echo "TEST_EMAIL=test_user@example.com" >> $GITHUB_ENV
           echo "TEST_FULL_NAME=Test User" >> $GITHUB_ENV
           echo "TEST_SCOPES=me read update" >> $GITHUB_ENV
+          echo "TOKEN_TYPE=bearer" >> $GITHUB_ENV
 
       # Step 5: Lint with Ruff
       - name: Lint with Ruff
@@ -75,6 +76,7 @@ jobs:
           TEST_EMAIL: ${{ env.TEST_EMAIL }}
           TEST_FULL_NAME: ${{ env.TEST_FULL_NAME }}
           TEST_SCOPES: ${{ env.TEST_SCOPES }}
+          TOKEN_TYPE: ${{ env.TOKEN_TYPE }}
         run: poetry run pytest
 
       # Step 7: Cache dependencies (optional but speeds things up)
