@@ -14,6 +14,7 @@ from fastapi import status
 from fastapi.security import SecurityScopes
 from jwt.exceptions import InvalidTokenError
 from pydantic import ValidationError
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -41,10 +42,30 @@ async def get_user(db: AsyncSession, username: str | None) -> User | None:
         User | None: The user object if found, otherwise None.
     """
     if username is None:
-        return None
-    stmt = select(User).where(User.username == username)
-    result = await db.execute(stmt)
-    return result.scalars().first()
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Username is required.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    try:
+        stmt = select(User).where(User.username == username)
+        result = await db.execute(stmt)
+        user = result.scalars().first()
+        if user is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate credentials",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+    except SQLAlchemyError as e:
+        exc_info = f"Database error: {e!s}"
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=exc_info,
+        ) from e
+    else:
+        return user
 
 
 async def get_current_user(
