@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+from typing import ClassVar
+
 from pydantic import BaseModel
+from pydantic import ConfigDict
 from pydantic import EmailStr
 
 
@@ -49,14 +52,7 @@ class UserOut(User):
     """
 
     id: int
-
-    class Config:
-        """
-        Config class to support populating attributes from the database.
-        This helps in ensuring that only attributes from the model are returned.
-        """
-
-        from_attributes = True
+    model_config = ConfigDict()
 
 
 class UserBaseUpdate(BaseModel):
@@ -66,8 +62,7 @@ class UserBaseUpdate(BaseModel):
     email: EmailStr | None = None
     full_name: str | None = None
 
-    class Config:
-        from_attributes = True
+    Config: ClassVar[ConfigDict] = ConfigDict(from_attributes=True)
 
 
 class UserFullUpdate(UserBaseUpdate):

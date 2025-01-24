@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+from typing import ClassVar
+
 from pydantic import BaseModel
+from pydantic import ConfigDict
 
 
 class AuthorBase(BaseModel):
@@ -17,5 +20,4 @@ class AuthorRead(AuthorBase):
     id: int
     books: list[str]
 
-    class Config:
-        from_attributes = True
+    Config: ClassVar[ConfigDict] = ConfigDict(from_attributes=True)

@@ -2,8 +2,10 @@ from __future__ import annotations
 
 from datetime import date
 from typing import Annotated
+from typing import ClassVar
 
 from pydantic import BaseModel
+from pydantic import ConfigDict
 from pydantic import Field
 
 
@@ -16,5 +18,4 @@ class BookUpdate(BaseModel):
     categories: list[str] | None = None
     image_src: str | None = None
 
-    class Config:
-        from_attributes = True
+    Config: ClassVar[ConfigDict] = ConfigDict(from_attributes=True)

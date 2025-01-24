@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 from datetime import date
+from typing import ClassVar
 
 from pydantic import BaseModel
+from pydantic import ConfigDict
 from pydantic import Field
 
 
@@ -16,8 +18,7 @@ class LibraryRead(BaseModel):
     book_id: int
     quantity_available: int
 
-    class Config:
-        from_attributes = True
+    Config: ClassVar[ConfigDict] = ConfigDict(from_attributes=True)
 
 
 class LendingData(BaseModel):

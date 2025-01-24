@@ -2,8 +2,10 @@ from __future__ import annotations
 
 from datetime import date
 from typing import Annotated
+from typing import ClassVar
 
 from pydantic import BaseModel
+from pydantic import ConfigDict
 from pydantic import Field
 from pydantic import model_validator
 
@@ -17,8 +19,7 @@ class BookCreate(BaseModel):
     categories: list[str] | None = Field(default=None)
     image_src: str | None = Field(default=None)
 
-    class Config:
-        from_attributes = True
+    Config: ClassVar[ConfigDict] = ConfigDict(from_attributes=True)
 
     @classmethod
     @model_validator(mode="before")
