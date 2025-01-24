@@ -79,7 +79,7 @@ async def authenticate_user(
         fails.
     """
     user = await get_user(db, username)
-    if not user:
+    if user is None:
         return None
     if not verify_password(password, user.hashed_password):
         return None
