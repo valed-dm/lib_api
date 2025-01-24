@@ -1,12 +1,10 @@
 import pytest
-from dotenv import load_dotenv
-
-load_dotenv()
 
 STATUS_OK = 200
 
 
 @pytest.mark.asyncio
+@pytest.mark.usefixtures("_override_dependencies")
 async def test_auth_workflow(async_client, test_user):
     username, password = test_user
 
