@@ -13,18 +13,28 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from auth.auth import get_password_hash
 from db import Base
 from db import User
+from db.utils import get_db
 from main import app
 
 load_dotenv()
 
-user = os.getenv("DB_USER")
-password = os.getenv("DB_PASSWORD")
-host = os.getenv("DB_HOST")
-dbname = "test_db"
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_HOST = os.getenv("DB_HOST")
+TEST_DB_NAME = os.getenv("TEST_DB_NAME")
+
+TEST_USERNAME = os.getenv("TEST_USERNAME")
+TEST_PASSWORD = os.getenv("TEST_PASSWORD")
+TEST_EMAIL = os.getenv("TEST_EMAIL")
+TEST_FULL_NAME = os.getenv("TEST_FULL_NAME")
+TEST_SCOPES = os.getenv("TEST_SCOPES")
+
+
+TEST_DATABASE_URL = (
+    f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{TEST_DB_NAME}"
+)
 
 STATUS_OK = 200
-TEST_PASSWORD = os.getenv("TEST_PASSWORD")
-TEST_DATABASE_URL = f"postgresql+asyncpg://{user}:{password}@{host}/{dbname}"
 
 
 @pytest.fixture
@@ -36,24 +46,23 @@ async def async_client():
 
 
 @pytest.fixture
-async def test_user(db_session):
+async def test_user(test_db_session):
     """Creates a test user."""
-    hashed_password = get_password_hash(TEST_PASSWORD)
-    user_obj = User(
-        username="test_user",
-        email="test_user@example.com",
-        hashed_password=hashed_password,
-        full_name="Test User",
-        scopes="me read superuser",
+    user = User(
+        username=TEST_USERNAME,
+        email=TEST_EMAIL,
+        hashed_password=get_password_hash(TEST_PASSWORD),
+        full_name=TEST_FULL_NAME,
+        scopes=TEST_SCOPES,
     )
-    db_session.add(user_obj)
-    await db_session.commit()
-    await db_session.refresh(user_obj)
-    return user_obj.username, TEST_PASSWORD
+    test_db_session.add(user)
+    await test_db_session.commit()
+    await test_db_session.refresh(user)
+    return user.username, TEST_PASSWORD
 
 
 @pytest.fixture
-async def db_session():
+async def test_db_session():
     """Fixture to provide a test database session."""
 
     # Create an async engine for the test database
@@ -85,3 +94,18 @@ async def db_session():
 
     # Dispose the engine after tests
     await engine.dispose()
+
+
+@pytest.fixture
+def override_get_db(test_db_session):
+    async def _override_get_db():
+        yield test_db_session
+
+    return _override_get_db
+
+
+@pytest.fixture
+def _override_dependencies(override_get_db):
+    app.dependency_overrides[get_db] = override_get_db
+    yield
+    app.dependency_overrides.clear()
