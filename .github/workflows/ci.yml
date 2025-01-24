@@ -25,8 +25,8 @@ jobs:
         ports:
           - 5432:5432
         env:
-          POSTGRES_USER: test_user
-          POSTGRES_PASSWORD: test_password
+          POSTGRES_USER: test_db_user
+          POSTGRES_PASSWORD: test_db_password
           POSTGRES_DB: test_db
         options: >-
           --health-cmd "pg_isready -U test_user"
@@ -55,13 +55,16 @@ jobs:
       # Step 4: Set environment variables
       - name: Set environment variables for tests
         run: |
-          echo "TEST_DATABASE_URL=postgresql+asyncpg://test_user:test_password@localhost:5432/test_db" >> $GITHUB_ENV
           echo "TEST_USERNAME=test_user" >> $GITHUB_ENV
           echo "TEST_PASSWORD=test_password" >> $GITHUB_ENV
           echo "TEST_EMAIL=test_user@example.com" >> $GITHUB_ENV
           echo "TEST_FULL_NAME=Test User" >> $GITHUB_ENV
           echo "TEST_SCOPES=me read update" >> $GITHUB_ENV
           echo "TOKEN_TYPE=bearer" >> $GITHUB_ENV
+          echo "DB_USER=test_db_user" >> $GITHUB_ENV
+          echo "DB_PASSWORD=test_db_password" >> $GITHUB_ENV
+          echo "DB_HOST=localhost" >> $GITHUB_ENV
+          echo "TEST_DB_NAME=test_db" >> $GITHUB_ENV
 
       # Step 5: Lint with Ruff
       - name: Lint with Ruff
@@ -70,14 +73,17 @@ jobs:
       # Step 6: Run tests
       - name: Run tests
         env:
-          TEST_DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
           TEST_USERNAME: ${{ env.TEST_USERNAME }}
           TEST_PASSWORD: ${{ env.TEST_PASSWORD }}
           TEST_EMAIL: ${{ env.TEST_EMAIL }}
           TEST_FULL_NAME: ${{ env.TEST_FULL_NAME }}
           TEST_SCOPES: ${{ env.TEST_SCOPES }}
           TOKEN_TYPE: ${{ env.TOKEN_TYPE }}
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DB_USER: ${{ env.DB_USER }}
+          DB_PASSWORD: ${{ env.DB_PASSWORD }}
+          DB_HOST: ${{ env.DB_HOST }}
+          TEST_DB_NAME: ${{ env.TEST_DB_NAME }}
         run: poetry run pytest
 
       # Step 7: Cache dependencies (optional but speeds things up)
