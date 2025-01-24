@@ -17,7 +17,22 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [ "3.9", "3.10", "3.11", "3.12" ]
+        python-version: [ "3.11", "3.12", "3.13" ]
+
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd "pg_isready -U test_user"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       # Step 1: Checkout the code
@@ -37,16 +52,32 @@ jobs:
           pip install poetry
           poetry install --no-root
 
-      # Step 4: Lint with Ruff
+      # Step 4: Set environment variables
+      - name: Set environment variables for tests
+        run: |
+          echo "TEST_DATABASE_URL=postgresql+asyncpg://test_user:test_password@localhost:5432/test_db" >> $GITHUB_ENV
+          echo "TEST_USERNAME=test_user" >> $GITHUB_ENV
+          echo "TEST_PASSWORD=test_password" >> $GITHUB_ENV
+          echo "TEST_EMAIL=test_user@example.com" >> $GITHUB_ENV
+          echo "TEST_FULL_NAME=Test User" >> $GITHUB_ENV
+          echo "TEST_SCOPES=me read update" >> $GITHUB_ENV
+
+      # Step 5: Lint with Ruff
       - name: Lint with Ruff
         run: poetry run ruff check --output-format=github --extend-ignore TC003 .
 
-
-      # Step 5: Run tests
+      # Step 6: Run tests
       - name: Run tests
+        env:
+          TEST_DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
+          TEST_USERNAME: ${{ env.TEST_USERNAME }}
+          TEST_PASSWORD: ${{ env.TEST_PASSWORD }}
+          TEST_EMAIL: ${{ env.TEST_EMAIL }}
+          TEST_FULL_NAME: ${{ env.TEST_FULL_NAME }}
+          TEST_SCOPES: ${{ env.TEST_SCOPES }}
         run: poetry run pytest
 
-      # Step 6: Cache dependencies (optional but speeds things up)
+      # Step 7: Cache dependencies (optional but speeds things up)
       - name: Cache Poetry dependencies
         uses: actions/cache@v3
         with:
