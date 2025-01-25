@@ -52,12 +52,6 @@ async def get_user(db: AsyncSession, username: str | None) -> User | None:
         stmt = select(User).where(User.username == username)
         result = await db.execute(stmt)
         user = result.scalars().first()
-        if user is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Could not validate credentials",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
     except SQLAlchemyError as e:
         exc_info = f"Database error: {e!s}"
         raise HTTPException(
